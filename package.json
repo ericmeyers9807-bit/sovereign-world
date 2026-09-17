@@ -1,0 +1,1 @@
+{"name":"sovereign-world-iron-dawn","version":"0.2.0","private":true,"description":"A fictional WWII-era grand strategy prototype","scripts":{"build":"node build.cjs","test":"node --test tests/engine.test.cjs"}}

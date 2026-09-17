@@ -1,40 +1,67 @@
-# Sovereign World
+# Sovereign World — Iron Dawn
 
-A dependency-free, single-player modern grand strategy browser game set on a fictional continent. Lead the Aster Republic against five computer-controlled nations.
+An original, single-player WWII-era grand strategy prototype set in a fictional world. The campaign begins on **3 September 1939**, with the Aster Republic already at war with the Karsk Directorate. This replaces the earlier modern-day hex-map prototype.
 
 ## Play
 
-Download `index.html` and open it in Chrome, Edge, Firefox, or Safari. No installation, account, or build step is required. On GitHub, open `index.html`, then use **Download raw file**. Alternatively, serve this directory with any static web server.
+Download **index.html** and open it in a current desktop browser. Everything is bundled into this one file: no installation, external assets, account, server, or internet connection is required. GitHub's code preview does not run the game; use **Download raw file** on the file page, then open the downloaded file. The repository is not automatically hosted as a live website.
 
-The campaign begins paused with an in-game tutorial. Press **Resume** to advance one week every two seconds; choose 2× or 4× to accelerate. The simulation pauses when the browser tab is hidden.
+The field manual appears on launch. The simulation starts paused. Click **Resume** or press **Space** to advance one day per real second; 2× and 4× speeds are available. Time stops when the tab is hidden or a campaign dialog is open.
 
-- **Economy:** Build industry, balance taxes and public services, and fund technology.
-- **Politics:** Manage approval, annual elections, and the risk of government collapse.
-- **Diplomacy:** Improve relations, sign revenue-producing trade agreements, form alliances, or declare war.
-- **Military:** Recruit brigades and fortify provinces. Select an owned province, choose **Issue order**, and click a neighboring province. 70% of the garrison travels for two weeks. War is required to enter foreign territory.
-- **Rivals:** Five nations recruit, develop industry, and attack your border provinces during war. Hostile neighbors may declare war every 24 weeks.
-- **Save/load:** Manual saves use this browser's local storage. Saves are device- and origin-specific; clearing browser data removes them. Downloaded-file storage behavior can vary by browser.
+### Army command
 
-## Victory and defeat
+- Click a division counter on the map or a division in the Army panel.
+- Right-click an adjacent province to move or attack. Alternatively, click **Move / attack**, then click or tap the destination.
+- Infantry needs two days to move; armor needs one; mountains require four. Battles must resolve before movement into defended provinces.
+- Green bars show organization. Gold bars show strength. Low organization forces retreat; encircled divisions may be destroyed.
+- **Assign army** assigns all current divisions to the Eastern Army plan. **Execute plan** directs assigned divisions along friendly territory toward the nearest hostile frontier. **Halt plan** pauses that plan, while **Hold all** stops all orders and clears assignments. New recruits must be assigned separately with **Assign army**.
+- Army plans are deliberately simple: there is no user-drawn front line or offensive line yet. Orange borders show the active front automatically.
+- Drag the map to pan, scroll or use +/− to zoom, and switch political/supply/terrain overlays. Enter selects focused map elements; Escape cancels destination selection.
 
-Win through any one of:
+### Industry and mobilization
 
-1. Control 24 of the continent's 48 provinces.
-2. Hold $3,000 with technology level 4 or higher.
-3. Form three alliances with surviving nations while maintaining at least 70% approval.
+Allocate military factories between rifles and tanks. Territory losses reduce active factory count. Use civilian construction to add military factories (28 days) or forts (10 days). One construction project runs at a time; losing its province cancels it.
 
-Lose when you control no provinces, or approval stays below 15% for 12 consecutive weeks. Conditions resolve at the next simulation tick. Start a new campaign to play again.
+Train infantry for 5,000 manpower and 300 rifles (10 days), or armor for 2,400 manpower, 150 rifles, and 40 tanks (16 days). Up to four divisions train simultaneously and deploy at Asterhaven. Reserve equipment is consumed at the start.
 
-## Development and testing
+Fuel regenerates each day. Active armored divisions consume five fuel daily. Resting, supplied divisions reinforce using rifles and manpower. Enemy reinforcement is simplified and does not simulate an equipment economy.
 
-All game code, CSS, and SVG map rendering live in `index.html`. It has no external assets or dependencies. Run engine tests with Node.js 18 or newer:
+### Supply, research, politics, and diplomacy
+
+- Supply flows through connected friendly territory from each nation's capital. Distance reduces supply beyond six provinces. Disconnected divisions suffer attrition and low organization.
+- Weapons research improves combat power; industrial research improves equipment output. Each takes 24 days and has three levels.
+- National focuses grant manpower, factories, better supply reach, political stability, or armor bonuses. Prerequisites unlock branches.
+- Political power funds conscription, improved relations, fuel agreements, alliances, and ceasefires. Stability affects manpower recovery. War support is presently an informational statistic.
+- Allies remain nonbelligerent in this prototype. Fuel agreements add eight fuel daily. Diplomatic relationships do not grant military access. Ceasefires preserve current borders.
+
+### Campaign objective
+
+Capture **Karsk City** and more than half of Karsk's original provinces. Karsk then capitulates and the campaign ends in victory. Losing **Asterhaven** ends in defeat. There is no post-victory continuation in this version.
+
+### Saves
+
+Use **Campaign → Save campaign / Load campaign**. Saves stay in this browser on this device and are separate from the earlier prototype's saves. Clearing browser data removes them. File-based local-storage behavior can vary by browser; if storage is blocked, the game displays an error. Loading always pauses time. Saves restore canonical province geometry and names rather than trusting those fields in stored data.
+
+## Development
+
+No runtime or build dependencies. Node.js 18+ is enough:
 
 ```sh
-node --test tests/engine.test.cjs
+npm run build
+npm test
 ```
 
-Tests cover map adjacency, movement and war requirements, battle arrival, ceasefires, research, victory/defeat, saves, and long-run state invariants.
+- `src/engine.js`: deterministic campaign rules; importable in Node for testing.
+- `src/ui.js`: map rendering and browser controls.
+- `src/style.css`: responsive command interface.
+- `src/shell.html`: accessible page structure and dialogs.
+- `build.cjs`: bundles the source into standalone `index.html`.
+- `tests/engine.test.cjs`: meaningful rules and state validation tests.
 
-## Prototype scope
+Rebuild `index.html` after source changes. The generated file is checked in so players can download it directly.
 
-This first version uses a fixed 48-province map, one playable nation, simplified brigades, deterministic events, and basic rival AI. Alliances provide a peaceful victory path and trade income; they do not dispatch allied armies. It does not yet include naval/air units, multiplayer, cloud saves, a world editor, or an advanced election simulator. No live hosting is configured automatically.
+## Scope
+
+75 provinces, six fictional nations, one playable country, infantry and armor, sustained land combat, automatic front lines, a simple army plan, factories, supply, research, focus branches, diplomacy, and local saves. Geography and campaign events are fictional. The presentation and mechanics take inspiration from WWII grand strategy, but this is not a clone or full-scale replacement for Hearts of Iron IV.
+
+Not implemented: air/naval warfare, custom division templates, drawn battle plans, multiplayer, fog of war, rail-network logistics, naval invasions, generals with skill trees, advanced political simulation, or cloud saves. The whole map is visible. The AI receives periodic reinforcements during war and uses the same movement/combat rules, but does not manage a player-like economy.
